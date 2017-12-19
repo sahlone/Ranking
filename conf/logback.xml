@@ -1,0 +1,86 @@
+<!-- https://www.playframework.com/documentation/latest/SettingsLogger -->
+<configuration>
+
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${application.home:-.}/logs/application.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%date [%level] from %logger in %thread - %message%n%xException</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- logstash is used to create json but this is not necessarily sent via a log stash appender  -->
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+
+                <logstashMarkers/>
+                <arguments/>
+                <pattern>
+                    <pattern>
+                        {
+                        "service":"${service}",
+                        "version":"${version}",
+                        "team":"${team}",
+                        "environment":"${environment}",
+                        "host":"${host}",
+                        "region":"${region}",
+                        "deployment":"${deployment}",
+                        "logger": "%logger",
+                        "level": "%level",
+                        "thread": "%thread",
+                        "message": "%message"
+                        }
+                    </pattern>
+                </pattern>
+                <provider class="com.bamnetworks.logging.logstash.ErrorProvider"/>
+                <stackTrace>
+                    <fieldName>error-stacktrace</fieldName>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                        <rootCauseFirst>true</rootCauseFirst>
+                    </throwableConverter>
+                </stackTrace>
+                <stackHash>
+                    <fieldName>error-stackhash</fieldName>
+                </stackHash>
+            </providers>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNCFILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
+    </appender>
+
+    <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT" />
+    </appender>
+
+    <logger name="play" level="INFO" />
+    <logger name="application" level="DEBUG" />
+    <logger name="com.bamnetworks.account" level="DEBUG" />
+
+    <logger name="account-service" level="${APP_LOG_LVL:-INFO}" />
+
+    <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
+    <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />
+    <logger name="com.avaje.ebeaninternal.server.core.XmlConfigLoader" level="OFF" />
+    <logger name="com.avaje.ebeaninternal.server.lib.BackgroundThread" level="OFF" />
+    <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
+
+    <!--This is from ftest where we use wiremock-->
+    <logger name="wiremock.org.eclipse.jetty.server.handler.ContextHandler" level="ERROR" />
+
+    <root level="${ROOT_LOG_LVL:-INFO}">
+        <!--<appender-ref ref="ASYNCFILE" />-->
+        <appender-ref ref="ASYNCSTDOUT" />
+    </root>
+
+</configuration>
