@@ -3,7 +3,7 @@ package ml
 import models.Trip
 
 import scala.concurrent.Future
-trait MLClient {
+trait MLSerivice {
 
   def rank5Trips(payload: Seq[Trip]): Future[Seq[String]]
 }

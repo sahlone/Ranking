@@ -26,11 +26,8 @@
                         {
                         "service":"${service}",
                         "version":"${version}",
-                        "team":"${team}",
                         "environment":"${environment}",
                         "host":"${host}",
-                        "region":"${region}",
-                        "deployment":"${deployment}",
                         "logger": "%logger",
                         "level": "%level",
                         "thread": "%thread",
@@ -38,7 +35,6 @@
                         }
                     </pattern>
                 </pattern>
-                <provider class="com.bamnetworks.logging.logstash.ErrorProvider"/>
                 <stackTrace>
                     <fieldName>error-stacktrace</fieldName>
                     <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
@@ -65,9 +61,6 @@
 
     <logger name="play" level="INFO" />
     <logger name="application" level="DEBUG" />
-    <logger name="com.bamnetworks.account" level="DEBUG" />
-
-    <logger name="account-service" level="${APP_LOG_LVL:-INFO}" />
 
     <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
     <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />
