@@ -21,7 +21,7 @@ val compileLibraries= Seq(
 )
 
 val testLibraries =Seq(
-  scalaTest
+  scalaTest % Test ,scalatestplusPlay % Test ,mockito % Test
 )
 lazy val rankingService = (project in file("."))
   .enablePlugins(PlayScala)

@@ -2,8 +2,7 @@ package ml
 
 import models.{MLServiceConfig, Trip}
 import play.api.libs.ws._
-import com.typesafe.config.Config
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.{Logger}
 import play.api.http.ContentTypes
 import play.api.http.HeaderNames.{ACCEPT, CONTENT_TYPE}
 import play.api.http.HttpVerbs.POST
@@ -19,8 +18,8 @@ class MLSeriviceImpl(wsClient: WSClient,
                      logger: Logger)(implicit ex: ExecutionContext)
     extends MLSerivice {
 
-  val baseUrl = config.serviceEndpoint
-  val timeout = config.timeout
+  lazy val baseUrl = config.serviceEndpoint
+  lazy val timeout = config.timeout
 
   override def rank5Trips(payload: Seq[Trip]): Future[Seq[String]] = {
 
